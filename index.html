@@ -131,48 +131,21 @@
                         </div>
                     </div>
 
-                    <!-- Signature Selection -->
+                    <!-- Signature Selection Header -->
                     <div class="pt-2 border-t border-slate-100">
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
-                            <i class="fa-solid fa-file-signature text-brand-600 mr-1.5"></i> Select Signature
-                        </label>
-                        <div class="space-y-2">
-                            <label class="flex items-center space-x-3 p-2.5 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
-                                <input type="radio" name="signatureOption" value="elizabeth" checked onchange="toggleCustomSigInput(); updateGenerator();" class="w-4 h-4 text-brand-600 focus:ring-brand-500 border-slate-300">
-                                <div class="text-xs">
-                                    <span class="font-semibold text-slate-800">Elizabeth Bortolas</span>
-                                    <span class="text-slate-500 block text-[11px]">Best Regards | TalentPath Search</span>
-                                </div>
+                        <div class="flex items-center justify-between mb-2">
+                            <label class="text-xs font-bold uppercase tracking-wider text-slate-500">
+                                <i class="fa-solid fa-file-signature text-brand-600 mr-1.5"></i> Select Signature
                             </label>
-                            <label class="flex items-center space-x-3 p-2.5 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
-                                <input type="radio" name="signatureOption" value="alexander" onchange="toggleCustomSigInput(); updateGenerator();" class="w-4 h-4 text-brand-600 focus:ring-brand-500 border-slate-300">
-                                <div class="text-xs">
-                                    <span class="font-semibold text-slate-800">Alexander Ovando</span>
-                                    <span class="text-slate-500 block text-[11px]">Warm Regards | TalentPath Search</span>
-                                </div>
-                            </label>
-                            <label class="flex items-center space-x-3 p-2.5 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
-                                <input type="radio" name="signatureOption" value="custom" id="sigRadioCustom" onchange="toggleCustomSigInput(); updateGenerator();" class="w-4 h-4 text-brand-600 focus:ring-brand-500 border-slate-300">
-                                <div class="text-xs w-full">
-                                    <span class="font-semibold text-slate-800">Custom Signature</span>
-                                    <span class="text-slate-500 block text-[11px]">Add your own signature line below</span>
-                                </div>
-                            </label>
+                            <button onclick="toggleModal('addSigModal')" class="text-xs text-brand-600 hover:text-brand-700 font-semibold flex items-center space-x-1">
+                                <i class="fa-solid fa-plus text-[10px]"></i>
+                                <span>Add Signature</span>
+                            </button>
+                        </div>
 
-                            <!-- Custom Signature Input Field -->
-                            <div id="customSigBox" class="hidden pl-7 pt-1">
-                                <textarea id="customSigInput" placeholder="Best Regards,&#10;Your Name | Company" 
-                                    rows="2" 
-                                    class="w-full text-xs p-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white"
-                                    oninput="updateGenerator()"></textarea>
-                            </div>
-
-                            <label class="flex items-center space-x-3 p-2.5 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
-                                <input type="radio" name="signatureOption" value="none" onchange="toggleCustomSigInput(); updateGenerator();" class="w-4 h-4 text-brand-600 focus:ring-brand-500 border-slate-300">
-                                <div class="text-xs font-semibold text-slate-600">
-                                    None (No Signature)
-                                </div>
-                            </label>
+                        <!-- Dynamic Signature List -->
+                        <div id="signatureListContainer" class="space-y-2">
+                            <!-- Populated dynamically via JS -->
                         </div>
                     </div>
 
@@ -256,6 +229,36 @@
         &copy; TalentPath Search Outreach Assistant &bull; Designed for High-Volume LinkedIn Campaigns
     </footer>
 
+    <!-- Add New Signature Modal -->
+    <div id="addSigModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full flex flex-col overflow-hidden fade-in">
+            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+                <h3 class="font-bold text-slate-800 text-sm">Add New Signature</h3>
+                <button onclick="toggleModal('addSigModal')" class="text-slate-400 hover:text-slate-600 text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 space-y-4 text-xs">
+                <div>
+                    <label class="font-bold text-slate-700 block mb-1">Display Name / Label *</label>
+                    <input type="text" id="newSigName" placeholder="e.g. Dipto | TalentPath" class="w-full p-2.5 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white focus:ring-2 focus:ring-brand-500 text-slate-800 text-xs">
+                </div>
+
+                <div>
+                    <label class="font-bold text-slate-700 block mb-1">Signature Line Text *</label>
+                    <textarea id="newSigText" rows="3" placeholder="Best Regards,&#10;Dipto | TalentPath Search" class="w-full p-2.5 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white focus:ring-2 focus:ring-brand-500 text-slate-800 text-xs font-sans"></textarea>
+                    <p class="text-[11px] text-slate-400 mt-1">This text will be appended directly to the end of your messages.</p>
+                </div>
+            </div>
+
+            <div class="px-6 py-4 border-t border-slate-200 bg-slate-50 flex justify-end space-x-2">
+                <button onclick="toggleModal('addSigModal')" class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-100 font-medium text-xs">Cancel</button>
+                <button onclick="saveNewSignature()" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-medium text-xs">Save Signature</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Template Customization Modal -->
     <div id="templateModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden fade-in">
@@ -267,7 +270,6 @@
             </div>
             
             <div class="p-6 overflow-y-auto space-y-6 text-xs">
-                
                 <div>
                     <label class="font-bold text-slate-700 block mb-1">InMail 1 Subject</label>
                     <input type="text" id="tpl_inmail_subj" class="w-full p-2 border border-slate-200 rounded bg-slate-50 text-slate-800">
@@ -312,7 +314,6 @@
                     <label class="font-bold text-slate-700 block mb-1">FU 3 Body</label>
                     <textarea id="tpl_fu3_body" rows="3" class="w-full p-2 border border-slate-200 rounded bg-slate-50 text-slate-800 font-mono"></textarea>
                 </div>
-
             </div>
 
             <div class="px-6 py-4 border-t border-slate-200 bg-slate-50 flex justify-between items-center">
@@ -346,41 +347,150 @@
             fu3_body: "Hi [Name], following up one last time on my previous note. Assuming timing isn't right at the moment, so I'll leave you alone after this - but if you'd ever like to explore franchise options down the road, feel free to reach back out!"
         };
 
-        const FIXED_SIGNATURES = {
-            elizabeth: "Best Regards,\nElizabeth Bortolas | TalentPath Search",
-            alexander: "Warm Regards\nAlexander Ovando | TalentPath Search",
-            none: ""
-        };
+        const FACTORY_SIGNATURES = [
+            {
+                id: 'elizabeth',
+                label: 'Elizabeth Bortolas',
+                subtext: 'Best Regards | TalentPath Search',
+                text: 'Best Regards,\nElizabeth Bortolas | TalentPath Search',
+                isDefault: true
+            },
+            {
+                id: 'alexander',
+                label: 'Alexander Ovando',
+                subtext: 'Warm Regards | TalentPath Search',
+                text: 'Warm Regards\nAlexander Ovando | TalentPath Search',
+                isDefault: true
+            }
+        ];
 
         let currentStage = 'dm';
         let templates = { ...DEFAULT_TEMPLATES };
+        let userSignatures = [];
+        let selectedSigId = 'elizabeth';
 
-        // Helper function for safe string replacement
         function safeReplaceName(str, name) {
             if (!str) return '';
             return str.split('[Name]').join(name);
         }
 
-        // Initialize state
         function init() {
-            localStorage.removeItem('tp_outreach_templates');
-            templates = { ...DEFAULT_TEMPLATES };
+            // Load saved signatures from localStorage
+            const savedSigs = localStorage.getItem('tp_user_signatures');
+            if (savedSigs) {
+                try {
+                    userSignatures = JSON.parse(savedSigs);
+                } catch(e) {
+                    userSignatures = [];
+                }
+            }
+
+            renderSignatureList();
             populateModalInputs();
             updateGenerator();
         }
 
-        // Toggle custom signature text box UI
-        function toggleCustomSigInput() {
-            const isCustom = document.getElementById('sigRadioCustom').checked;
-            const box = document.getElementById('customSigBox');
-            if (isCustom) {
-                box.classList.remove('hidden');
-            } else {
-                box.classList.add('hidden');
+        // Render signatures list dynamically
+        function renderSignatureList() {
+            const container = document.getElementById('signatureListContainer');
+            container.innerHTML = '';
+
+            const allSigs = [...FACTORY_SIGNATURES, ...userSignatures];
+
+            allSigs.forEach(sig => {
+                const isChecked = sig.id === selectedSigId;
+                
+                const label = document.createElement('label');
+                label.className = `flex items-center justify-between p-2.5 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer transition ${isChecked ? 'bg-slate-50 border-brand-200' : ''}`;
+
+                let deleteBtnHtml = '';
+                if (!sig.isDefault) {
+                    deleteBtnHtml = `
+                        <button type="button" onclick="deleteSignature(event, '${sig.id}')" class="text-slate-400 hover:text-rose-600 text-xs p-1 rounded hover:bg-rose-50 transition" title="Delete Signature">
+                            <i class="fa-regular fa-trash-can"></i>
+                        </button>
+                    `;
+                }
+
+                label.innerHTML = `
+                    <div class="flex items-center space-x-3 overflow-hidden pr-2">
+                        <input type="radio" name="signatureOption" value="${sig.id}" ${isChecked ? 'checked' : ''} onchange="selectSig('${sig.id}')" class="w-4 h-4 text-brand-600 focus:ring-brand-500 border-slate-300 shrink-0">
+                        <div class="text-xs truncate">
+                            <span class="font-semibold text-slate-800 block truncate">${sig.label}</span>
+                            <span class="text-slate-500 block text-[11px] truncate">${sig.subtext || ''}</span>
+                        </div>
+                    </div>
+                    ${deleteBtnHtml}
+                `;
+
+                container.appendChild(label);
+            });
+
+            // Add "None" option
+            const noneChecked = selectedSigId === 'none';
+            const noneLabel = document.createElement('label');
+            noneLabel.className = `flex items-center space-x-3 p-2.5 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer transition ${noneChecked ? 'bg-slate-50 border-brand-200' : ''}`;
+            noneLabel.innerHTML = `
+                <input type="radio" name="signatureOption" value="none" ${noneChecked ? 'checked' : ''} onchange="selectSig('none')" class="w-4 h-4 text-brand-600 focus:ring-brand-500 border-slate-300">
+                <div class="text-xs font-semibold text-slate-600">
+                    None (No Signature)
+                </div>
+            `;
+            container.appendChild(noneLabel);
+        }
+
+        function selectSig(id) {
+            selectedSigId = id;
+            renderSignatureList();
+            updateGenerator();
+        }
+
+        function saveNewSignature() {
+            const labelInput = document.getElementById('newSigName').value.trim();
+            const textInput = document.getElementById('newSigText').value.trim();
+
+            if (!labelInput || !textInput) {
+                alert('Please enter both a label and the signature text.');
+                return;
+            }
+
+            const newSig = {
+                id: 'custom_' + Date.now(),
+                label: labelInput,
+                subtext: textInput.split('\n')[0],
+                text: textInput,
+                isDefault: false
+            };
+
+            userSignatures.push(newSig);
+            localStorage.setItem('tp_user_signatures', JSON.stringify(userSignatures));
+
+            selectedSigId = newSig.id;
+
+            // Reset modal inputs
+            document.getElementById('newSigName').value = '';
+            document.getElementById('newSigText').value = '';
+
+            toggleModal('addSigModal');
+            renderSignatureList();
+            updateGenerator();
+        }
+
+        function deleteSignature(e, id) {
+            e.stopPropagation();
+            if (confirm('Are you sure you want to delete this signature?')) {
+                userSignatures = userSignatures.filter(s => s.id !== id);
+                localStorage.setItem('tp_user_signatures', JSON.stringify(userSignatures));
+                
+                if (selectedSigId === id) {
+                    selectedSigId = 'elizabeth';
+                }
+
+                renderSignatureList();
+                updateGenerator();
             }
         }
 
-        // Set current message stage
         function setStage(stage) {
             currentStage = stage;
             
@@ -410,7 +520,6 @@
             updateGenerator();
         }
 
-        // Extract first name dynamically
         function extractFirstName(rawInput) {
             if (!rawInput || !rawInput.trim()) return '[Name]';
             const cleaned = rawInput.trim();
@@ -418,19 +527,13 @@
             return parts[0] || '[Name]';
         }
 
-        // Main rendering engine
         function updateGenerator() {
             const nameInput = document.getElementById('contactName').value;
             const firstName = extractFirstName(nameInput);
             
-            const selectedSigKey = document.querySelector('input[name="signatureOption"]:checked').value;
-            let signatureText = "";
-
-            if (selectedSigKey === 'custom') {
-                signatureText = document.getElementById('customSigInput').value;
-            } else {
-                signatureText = FIXED_SIGNATURES[selectedSigKey];
-            }
+            const allSigs = [...FACTORY_SIGNATURES, ...userSignatures];
+            const activeSigObj = allSigs.find(s => s.id === selectedSigId);
+            const signatureText = activeSigObj ? activeSigObj.text : '';
 
             let subject = '';
             let body = '';
@@ -461,7 +564,6 @@
             document.getElementById('previewBody').innerText = body;
         }
 
-        // Copy functionality with UI feedback
         function copyToClipboard(elementId, iconId, textId) {
             const textToCopy = document.getElementById(elementId).innerText;
             if (!textToCopy) return;
@@ -509,7 +611,6 @@
             });
         }
 
-        // Modal Controls
         function toggleModal(modalId) {
             const modal = document.getElementById(modalId);
             modal.classList.toggle('hidden');
@@ -553,7 +654,6 @@
             }
         }
 
-        // Initialize on page load
         window.onload = init;
     </script>
 </body>
