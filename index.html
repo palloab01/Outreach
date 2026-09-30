@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkedIn Outreach Message Generator</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        /* Custom scrollbar for textareas */
+        textarea::-webkit-scrollbar {
+            width: 6px;
+        }
+        textarea::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        textarea::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <!-- Header / Navbar -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-brand-600 text-white p-2.5 rounded-xl shadow-md flex items-center justify-center">
+                    <i class="fa-brands fa-linkedin-in text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-slate-900 leading-tight">Outreach Generator</h1>
+                    <p class="text-xs text-slate-500 font-medium">TalentPath Search | Executive Campaign Tool</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleTemplateEditor()" class="inline-flex items-center space-x-2 px-3.5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs sm:text-sm font-medium transition">
+                    <i class="fa-solid fa-sliders text-brand-600"></i>
+                    <span class="hidden sm:inline">Customize Templates</span>
+                    <span class="sm:hidden">Templates</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Left Column: Controls & Inputs -->
+            <div class="lg:col-span-5 space-y-6">
+                
+                <!-- Main Input Card -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 space-y-5">
+                    <div class="border-b border-slate-100 pb-4">
+                        <h2 class="text-lg font-semibold text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-user-gear text-brand-600"></i>
+                            Prospect Details
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-1">Enter target information to craft your personalized script.</p>
+                    </div>
+
+                    <!-- Name Input -->
+                    <div>
+                        <label for="prospectName" class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">
+                            Contact Name <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative rounded-xl shadow-sm">
+                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                <i class="fa-solid fa-user text-sm"></i>
+                            </div>
+                            <input type="text" id="prospectName" placeholder="e.g. Mark Wajda or Mark" 
+                                class="block w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition"
+                                oninput="generateMessage()">
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1">First names are automatically extracted from full names.</p>
+                    </div>
+
+                    <!-- Message Type Selector -->
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">
+                            Message Type / Stage <span class="text-red-500">*</span>
+                        </label>
+                        <div class="grid grid-cols-5 gap-2" id="typeSelectorGrid">
+                            <button type="button" onclick="selectType('Inmail')" id="btn-Inmail" class="type-btn py-2.5 px-2 rounded-xl text-xs font-semibold border border-slate-200 text-slate-600 hover:border-brand-500 transition flex flex-col items-center justify-center gap-1">
+                                <i class="fa-solid fa-envelope text-xs"></i>
+                                <span>InMail</span>
+                            </button>
+                            <button type="button" onclick="selectType('DM')" id="btn-DM" class="type-btn py-2.5 px-2 rounded-xl text-xs font-semibold border border-slate-200 text-slate-600 hover:border-brand-500 transition flex flex-col items-center justify-center gap-1">
+                                <i class="fa-solid fa-paper-plane text-xs"></i>
+                                <span>DM</span>
+                            </button>
+                            <button type="button" onclick="selectType('FU1')" id="btn-FU1" class="type-btn py-2.5 px-2 rounded-xl text-xs font-semibold border border-slate-200 text-slate-600 hover:border-brand-500 transition flex flex-col items-center justify-center gap-1">
+                                <i class="fa-solid fa-clock-rotate-left text-xs"></i>
+                                <span>FU 1</span>
+                            </button>
+                            <button type="button" onclick="selectType('FU2')" id="btn-FU2" class="type-btn py-2.5 px-2 rounded-xl text-xs font-semibold border border-slate-200 text-slate-600 hover:border-brand-500 transition flex flex-col items-center justify-center gap-1">
+                                <i class="fa-solid fa-hourglass-half text-xs"></i>
+                                <span>FU 2</span>
+                            </button>
+                            <button type="button" onclick="selectType('FU3')" id="btn-FU3" class="type-btn py-2.5 px-2 rounded-xl text-xs font-semibold border border-slate-200 text-slate-600 hover:border-brand-500 transition flex flex-col items-center justify-center gap-1">
+                                <i class="fa-solid fa-flag text-xs"></i>
+                                <span>FU 3</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Custom Options Toggle -->
+                    <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+                        <label for="includeSignature" class="flex items-center cursor-pointer select-none space-x-3">
+                            <input type="checkbox" id="includeSignature" checked onchange="generateMessage()" class="sr-only peer">
+                            <div class="w-10 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600 relative"></div>
+                            <span class="text-xs font-medium text-slate-700">Attach Elizabeth's Signature</span>
+                        </label>
+                    </div>
+
+                </div>
+
+                <!-- Guidance Info Box -->
+                <div class="bg-brand-50 rounded-2xl p-5 border border-brand-100 flex items-start space-x-3">
+                    <i class="fa-solid fa-circle-info text-brand-600 text-base mt-0.5"></i>
+                    <div class="text-xs text-brand-900 space-y-1">
+                        <p class="font-semibold">Standard Strategy Reminder:</p>
+                        <p class="text-brand-700 leading-relaxed">Use <strong>InMail</strong> for non-connections. Use <strong>DM</strong> (Wealth Goals Copy) for accepted 1st-degree connections. Follow-ups automatically align with sequence logic.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Generated Message Preview & Output -->
+            <div class="lg:col-span-7 space-y-6">
+                
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 flex flex-col h-full space-y-5">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                        <h2 class="text-lg font-semibold text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-eye text-brand-600"></i>
+                            Live Preview
+                        </h2>
+                        <span id="activeBadge" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-brand-100 text-brand-700">
+                            DM Selected
+                        </span>
+                    </div>
+
+                    <!-- Subject Line Block (Hidden if empty) -->
+                    <div id="subjectContainer" class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500">
+                                Subject Line
+                            </label>
+                            <button onclick="copyToClipboard('subjectOutput', 'copySubBtn')" id="copySubBtn" class="text-xs font-semibold text-brand-600 hover:text-brand-700 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-brand-50 hover:bg-brand-100 transition">
+                                <i class="fa-regular fa-copy"></i>
+                                <span>Copy Subject</span>
+                            </button>
+                        </div>
+                        <div id="subjectOutput" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-800 min-h-[46px] flex items-center">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Body Block -->
+                    <div class="space-y-2 flex-grow flex flex-col">
+                        <div class="flex items-center justify-between">
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500">
+                                Message Body
+                            </label>
+                            <button onclick="copyToClipboard('bodyOutput', 'copyBodyBtn')" id="copyBodyBtn" class="text-xs font-semibold text-brand-600 hover:text-brand-700 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-brand-50 hover:bg-brand-100 transition">
+                                <i class="fa-regular fa-copy"></i>
+                                <span>Copy Message</span>
+                            </button>
+                        </div>
+                        <div id="bodyOutput" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 whitespace-pre-wrap font-sans leading-relaxed min-h-[260px] flex-grow">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Combined Action Row -->
+                    <div class="pt-2 flex items-center justify-end">
+                        <button onclick="copyAll()" id="copyAllBtn" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold shadow-md shadow-brand-500/20 transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-copy"></i>
+                            <span>Copy Full Script</span>
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Modal: Template Editor -->
+    <div id="templateModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-200">
+        <div class="bg-white rounded-2xl max-w-2xl w-full mx-4 max-h-[90vh] flex flex-col shadow-2xl border border-slate-100 overflow-hidden">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-sliders text-brand-600"></i>
+                    <h3 class="font-semibold text-slate-900">Customize Message Templates</h3>
+                </div>
+                <button onclick="toggleTemplateEditor()" class="text-slate-400 hover:text-slate-600 text-lg p-1">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content (Scrollable) -->
+            <div class="p-6 overflow-y-auto space-y-6 flex-grow">
+                <p class="text-xs text-slate-500">
+                    Modify the default templates below. Use <code class="bg-slate-100 text-brand-600 px-1.5 py-0.5 rounded border border-slate-200">{name}</code> as a placeholder for the contact's first name.
+                </p>
+
+                <!-- Template Selection Tabs in Modal -->
+                <div class="flex border-b border-slate-200 space-x-4" id="modalTabs">
+                    <button onclick="switchModalTab('Inmail')" id="tab-Inmail" class="pb-2 text-xs font-semibold border-b-2 border-brand-600 text-brand-600">InMail</button>
+                    <button onclick="switchModalTab('DM')" id="tab-DM" class="pb-2 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-700">DM</button>
+                    <button onclick="switchModalTab('FU1')" id="tab-FU1" class="pb-2 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-700">FU 1</button>
+                    <button onclick="switchModalTab('FU2')" id="tab-FU2" class="pb-2 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-700">FU 2</button>
+                    <button onclick="switchModalTab('FU3')" id="tab-FU3" class="pb-2 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-700">FU 3</button>
+                </div>
+
+                <!-- Subject Edit Box -->
+                <div id="modalSubjectBox" class="space-y-1.5">
+                    <label class="block text-xs font-semibold text-slate-600 uppercase">Subject Template</label>
+                    <input type="text" id="editSubject" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+
+                <!-- Body Edit Box -->
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-semibold text-slate-600 uppercase">Body Template</label>
+                    <textarea id="editBody" rows="8" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 font-sans"></textarea>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between">
+                <button onclick="resetDefaults()" class="text-xs font-semibold text-slate-500 hover:text-red-600 transition">
+                    Reset All Defaults
+                </button>
+                <div class="flex space-x-3">
+                    <button onclick="toggleTemplateEditor()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-200 hover:bg-slate-300 text-slate-700 transition">
+                        Cancel
+                    </button>
+                    <button onclick="saveModalTemplate()" class="px-5 py-2 rounded-xl text-xs font-semibold bg-brand-600 hover:bg-brand-700 text-white transition shadow-sm">
+                        Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white text-xs font-medium px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-2 translate-y-16 opacity-0 transition-all duration-300 pointer-events-none z-50">
+        <i class="fa-solid fa-circle-check text-green-400 text-sm"></i>
+        <span id="toastMessage">Text copied to clipboard!</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400">
+        <p>© TalentPath Search Outreach Assistant • Designed for High-Volume LinkedIn Campaigns</p>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Signature Constant
+        const SIGNATURE_BLOCK = "\n\nBest Regards,\nElizabeth Bortolas | TalentPath Search";
+
+        // Default Templates
+        const DEFAULT_TEMPLATES = {
+            Inmail: {
+                subject: "Quick question, {name}",
+                body: "Hi {name},\n\nA client requested I connect. They expressed interest in your experience and asked me to connect to see if you'd be open to discussing franchise options in your area.\n\nOpen to learning more? No sales pitch, just sound guidance around franchising."
+            },
+            DM: {
+                subject: "",
+                body: "Hi {name},\n\nThanks for connecting! \n\nI am reaching out on behalf of a client who works with senior corporate leaders looking to leverage their executive skill sets to build secondary, semi-absentee corporate asset portfolios, without leaving their day jobs. \n\nOpen to a brief 15-minute introduction this week to see if diversifying into these private equity-backed frameworks aligns with your long-term wealth goals?"
+            },
+            FU1: {
+                subject: "",
+                body: "Hi {name},\n\nFollowing up on my previous note. I know you're likely balancing a full executive schedule, so I wanted to bring this back to the top of your inbox.\n\nWould you have 10-15 minutes later this week for a brief conversation regarding secondary asset expansion?"
+            },
+            FU2: {
+                subject: "",
+                body: "Hi {name},\n\nQuick bump here—our client is actively finalizing local portfolio opportunities for this quarter.\n\nEven if the timing isn't right immediately, let me know if you'd be open to keeping the door open for future executive portfolio developments."
+            },
+            FU3: {
+                subject: "",
+                body: "Hi {name},\n\nI don't want to overstay my welcome in your inbox! \n\nIf diversifying into semi-absentee corporate assets isn't a priority right now, no worries at all. If things shift down the road, feel free to reach back out.\n\nWishing you continued success."
+            }
+        };
+
+        // Current Application State
+        let currentType = 'DM';
+        let templates = JSON.parse(localStorage.getItem('talentpath_templates')) || JSON.parse(JSON.stringify(DEFAULT_TEMPLATES));
+        let activeModalTab = 'DM';
+
+        // Initialize App
+        window.addEventListener('DOMContentLoaded', () => {
+            selectType('DM');
+        });
+
+        // Name Extraction Helper
+        function getFirstName(fullName) {
+            if (!fullName || !fullName.trim()) return "[Name]";
+            const cleanName = fullName.trim().split(' ')[0];
+            return cleanName.charAt(0).toUpperCase() + cleanName.slice(1);
+        }
+
+        // Type Selector Switcher
+        function selectType(type) {
+            currentType = type;
+            
+            // Update UI Button Styles
+            document.querySelectorAll('.type-btn').forEach(btn => {
+                btn.classList.remove('border-brand-600', 'bg-brand-50', 'text-brand-600', 'shadow-sm');
+                btn.classList.add('border-slate-200', 'text-slate-600');
+            });
+
+            const activeBtn = document.getElementById(`btn-${type}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('border-slate-200', 'text-slate-600');
+                activeBtn.classList.add('border-brand-600', 'bg-brand-50', 'text-brand-600', 'shadow-sm');
+            }
+
+            // Update Active Badge
+            document.getElementById('activeBadge').innerText = `${type} Mode`;
+
+            // Re-render message preview
+            generateMessage();
+        }
+
+        // Generate and Render Output
+        function generateMessage() {
+            const nameInput = document.getElementById('prospectName').value;
+            const firstName = getFirstName(nameInput);
+            const includeSig = document.getElementById('includeSignature').checked;
+
+            const template = templates[currentType] || DEFAULT_TEMPLATES[currentType];
+
+            // Handle Subject Line
+            const subjectContainer = document.getElementById('subjectContainer');
+            const subjectOutput = document.getElementById('subjectOutput');
+
+            if (template.subject && template.subject.trim() !== '') {
+                const formattedSubject = template.subject.replace(/{name}/g, firstName);
+                subjectOutput.innerText = formattedSubject;
+                subjectContainer.classList.remove('hidden');
+            } else {
+                subjectContainer.classList.add('hidden');
+            }
+
+            // Handle Body Text
+            let formattedBody = template.body.replace(/{name}/g, firstName);
+            if (includeSig) {
+                formattedBody += SIGNATURE_BLOCK;
+            }
+
+            document.getElementById('bodyOutput').innerText = formattedBody;
+        }
+
+        // Copy Helper
+        function copyToClipboard(elementId, buttonId) {
+            const textToCopy = document.getElementById(elementId).innerText;
+            if (!textToCopy) return;
+
+            // Fallback strategy for iframe compatibility
+            const textarea = document.createElement('textarea');
+            textarea.value = textToCopy;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            showToast("Copied to clipboard!");
+            flashButton(buttonId);
+        }
+
+        // Copy All (Subject + Body if available)
+        function copyAll() {
+            const template = templates[currentType];
+            const subjectText = document.getElementById('subjectOutput').innerText;
+            const bodyText = document.getElementById('bodyOutput').innerText;
+
+            let fullText = "";
+            if (template.subject && template.subject.trim() !== "") {
+                fullText += `Subject: ${subjectText}\n\n`;
+            }
+            fullText += bodyText;
+
+            const textarea = document.createElement('textarea');
+            textarea.value = fullText;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            showToast("Full script copied!");
+            flashButton('copyAllBtn');
+        }
+
+        // Button Visual Feedback
+        function flashButton(btnId) {
+            const btn = document.getElementById(btnId);
+            if (!btn) return;
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = `<i class="fa-solid fa-check text-green-500"></i> <span>Copied!</span>`;
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+            }, 1800);
+        }
+
+        // Toast Popup
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').innerText = msg;
+            toast.classList.remove('translate-y-16', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-16', 'opacity-0');
+            }, 2500);
+        }
+
+        // Modal Controls & Customizer Logic
+        function toggleTemplateEditor() {
+            const modal = document.getElementById('templateModal');
+            if (modal.classList.contains('hidden')) {
+                switchModalTab(currentType);
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                }, 10);
+            } else {
+                modal.classList.add('opacity-0');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 200);
+            }
+        }
+
+        function switchModalTab(type) {
+            activeModalTab = type;
+
+            // Update Tab styles
+            const tabs = ['Inmail', 'DM', 'FU1', 'FU2', 'FU3'];
+            tabs.forEach(t => {
+                const tabBtn = document.getElementById(`tab-${t}`);
+                if (t === type) {
+                    tabBtn.className = "pb-2 text-xs font-semibold border-b-2 border-brand-600 text-brand-600";
+                } else {
+                    tabBtn.className = "pb-2 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-700";
+                }
+            });
+
+            // Fill inputs with selected template
+            const t = templates[type];
+            document.getElementById('editSubject').value = t.subject || '';
+            document.getElementById('editBody').value = t.body || '';
+
+            // Toggle Subject input visibility in modal
+            const modalSubjectBox = document.getElementById('modalSubjectBox');
+            if (type === 'Inmail') {
+                modalSubjectBox.classList.remove('hidden');
+            } else {
+                modalSubjectBox.classList.add('hidden');
+            }
+        }
+
+        function saveModalTemplate() {
+            templates[activeModalTab] = {
+                subject: document.getElementById('editSubject').value,
+                body: document.getElementById('editBody').value
+            };
+
+            // Save to localStorage
+            localStorage.setItem('talentpath_templates', JSON.stringify(templates));
+
+            showToast("Template saved successfully!");
+            generateMessage();
+            toggleTemplateEditor();
+        }
+
+        function resetDefaults() {
+            if (confirm("Reset all custom templates back to Elizabeth's default campaign scripts?")) {
+                templates = JSON.parse(JSON.stringify(DEFAULT_TEMPLATES));
+                localStorage.removeItem('talentpath_templates');
+                switchModalTab(activeModalTab);
+                generateMessage();
+                showToast("Templates reset to default!");
+            }
+        }
+    </script>
+</body>
+</html>
