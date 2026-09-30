@@ -99,14 +99,22 @@
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
                             <i class="fa-solid fa-layer-group text-brand-600 mr-1.5"></i> Message Type / Stage <span class="text-rose-500">*</span>
                         </label>
-                        <div class="grid grid-cols-5 gap-1.5">
+                        <div class="grid grid-cols-3 sm:grid-cols-4 gap-1.5">
                             <button onclick="setStage('inmail')" id="btn-inmail" class="stage-btn flex flex-col items-center justify-center p-2 rounded-lg border border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50 transition text-center">
                                 <i class="fa-regular fa-paper-plane text-xs mb-1"></i>
-                                <span class="text-[11px] font-semibold">InMail</span>
+                                <span class="text-[11px] font-semibold">InMail 1</span>
+                            </button>
+                            <button onclick="setStage('inmail2')" id="btn-inmail2" class="stage-btn flex flex-col items-center justify-center p-2 rounded-lg border border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50 transition text-center">
+                                <i class="fa-regular fa-paper-plane text-xs mb-1"></i>
+                                <span class="text-[11px] font-semibold">InMail 2</span>
                             </button>
                             <button onclick="setStage('dm')" id="btn-dm" class="stage-btn active-tab flex flex-col items-center justify-center p-2 rounded-lg border border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50 transition text-center">
                                 <i class="fa-solid fa-paper-plane text-xs mb-1"></i>
-                                <span class="text-[11px] font-semibold">DM</span>
+                                <span class="text-[11px] font-semibold">DM 1</span>
+                            </button>
+                            <button onclick="setStage('dm2')" id="btn-dm2" class="stage-btn flex flex-col items-center justify-center p-2 rounded-lg border border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50 transition text-center">
+                                <i class="fa-solid fa-paper-plane text-xs mb-1"></i>
+                                <span class="text-[11px] font-semibold">DM 2</span>
                             </button>
                             <button onclick="setStage('fu1')" id="btn-fu1" class="stage-btn flex flex-col items-center justify-center p-2 rounded-lg border border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50 transition text-center">
                                 <i class="fa-solid fa-rotate-right text-xs mb-1"></i>
@@ -130,21 +138,37 @@
                         </label>
                         <div class="space-y-2">
                             <label class="flex items-center space-x-3 p-2.5 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
-                                <input type="radio" name="signatureOption" value="elizabeth" checked onchange="updateGenerator()" class="w-4 h-4 text-brand-600 focus:ring-brand-500 border-slate-300">
+                                <input type="radio" name="signatureOption" value="elizabeth" checked onchange="toggleCustomSigInput(); updateGenerator();" class="w-4 h-4 text-brand-600 focus:ring-brand-500 border-slate-300">
                                 <div class="text-xs">
                                     <span class="font-semibold text-slate-800">Elizabeth Bortolas</span>
                                     <span class="text-slate-500 block text-[11px]">Best Regards | TalentPath Search</span>
                                 </div>
                             </label>
                             <label class="flex items-center space-x-3 p-2.5 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
-                                <input type="radio" name="signatureOption" value="alexander" onchange="updateGenerator()" class="w-4 h-4 text-brand-600 focus:ring-brand-500 border-slate-300">
+                                <input type="radio" name="signatureOption" value="alexander" onchange="toggleCustomSigInput(); updateGenerator();" class="w-4 h-4 text-brand-600 focus:ring-brand-500 border-slate-300">
                                 <div class="text-xs">
                                     <span class="font-semibold text-slate-800">Alexander Ovando</span>
                                     <span class="text-slate-500 block text-[11px]">Warm Regards | TalentPath Search</span>
                                 </div>
                             </label>
                             <label class="flex items-center space-x-3 p-2.5 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
-                                <input type="radio" name="signatureOption" value="none" onchange="updateGenerator()" class="w-4 h-4 text-brand-600 focus:ring-brand-500 border-slate-300">
+                                <input type="radio" name="signatureOption" value="custom" id="sigRadioCustom" onchange="toggleCustomSigInput(); updateGenerator();" class="w-4 h-4 text-brand-600 focus:ring-brand-500 border-slate-300">
+                                <div class="text-xs w-full">
+                                    <span class="font-semibold text-slate-800">Custom Signature</span>
+                                    <span class="text-slate-500 block text-[11px]">Add your own signature line below</span>
+                                </div>
+                            </label>
+
+                            <!-- Custom Signature Input Field -->
+                            <div id="customSigBox" class="hidden pl-7 pt-1">
+                                <textarea id="customSigInput" placeholder="Best Regards,&#10;Your Name | Company" 
+                                    rows="2" 
+                                    class="w-full text-xs p-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white"
+                                    oninput="updateGenerator()"></textarea>
+                            </div>
+
+                            <label class="flex items-center space-x-3 p-2.5 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                <input type="radio" name="signatureOption" value="none" onchange="toggleCustomSigInput(); updateGenerator();" class="w-4 h-4 text-brand-600 focus:ring-brand-500 border-slate-300">
                                 <div class="text-xs font-semibold text-slate-600">
                                     None (No Signature)
                                 </div>
@@ -159,7 +183,7 @@
                     <i class="fa-solid fa-circle-info text-blue-600 text-sm mt-0.5 shrink-0"></i>
                     <div>
                         <strong class="font-semibold block mb-0.5">Standard Strategy Reminder:</strong>
-                        Use <strong>InMail</strong> for non-connections. Use <strong>DM</strong> (Wealth Goals Copy) for accepted 1st-degree connections. Follow-ups automatically align with sequence logic.
+                        Use <strong>InMail</strong> for non-connections. Use <strong>DM</strong> for accepted 1st-degree connections. Follow-ups automatically align with sequence logic.
                     </div>
                 </div>
 
@@ -175,7 +199,7 @@
                             <h2 class="text-sm font-bold uppercase tracking-wider text-slate-700">Live Preview</h2>
                         </div>
                         <span id="badgeStage" class="text-[11px] font-semibold bg-brand-50 text-brand-600 px-2.5 py-1 rounded-md border border-brand-100">
-                            DM Mode
+                            DM 1 Mode
                         </span>
                     </div>
 
@@ -245,19 +269,33 @@
             <div class="p-6 overflow-y-auto space-y-6 text-xs">
                 
                 <div>
-                    <label class="font-bold text-slate-700 block mb-1">InMail Subject Placeholder</label>
+                    <label class="font-bold text-slate-700 block mb-1">InMail 1 Subject</label>
                     <input type="text" id="tpl_inmail_subj" class="w-full p-2 border border-slate-200 rounded bg-slate-50 text-slate-800">
-                    <span class="text-slate-400">Use <code>[Name]</code> for dynamic first name insertion.</span>
                 </div>
 
                 <div>
-                    <label class="font-bold text-slate-700 block mb-1">InMail Body</label>
+                    <label class="font-bold text-slate-700 block mb-1">InMail 1 Body</label>
                     <textarea id="tpl_inmail_body" rows="4" class="w-full p-2 border border-slate-200 rounded bg-slate-50 text-slate-800 font-mono"></textarea>
                 </div>
 
                 <div>
-                    <label class="font-bold text-slate-700 block mb-1">DM Body (Wealth Goals Long-form)</label>
-                    <textarea id="tpl_dm_body" rows="6" class="w-full p-2 border border-slate-200 rounded bg-slate-50 text-slate-800 font-mono"></textarea>
+                    <label class="font-bold text-slate-700 block mb-1">InMail 2 Subject</label>
+                    <input type="text" id="tpl_inmail2_subj" class="w-full p-2 border border-slate-200 rounded bg-slate-50 text-slate-800">
+                </div>
+
+                <div>
+                    <label class="font-bold text-slate-700 block mb-1">InMail 2 Body</label>
+                    <textarea id="tpl_inmail2_body" rows="4" class="w-full p-2 border border-slate-200 rounded bg-slate-50 text-slate-800 font-mono"></textarea>
+                </div>
+
+                <div>
+                    <label class="font-bold text-slate-700 block mb-1">DM 1 Body (Wealth Goals)</label>
+                    <textarea id="tpl_dm_body" rows="5" class="w-full p-2 border border-slate-200 rounded bg-slate-50 text-slate-800 font-mono"></textarea>
+                </div>
+
+                <div>
+                    <label class="font-bold text-slate-700 block mb-1">DM 2 Body</label>
+                    <textarea id="tpl_dm2_body" rows="5" class="w-full p-2 border border-slate-200 rounded bg-slate-50 text-slate-800 font-mono"></textarea>
                 </div>
 
                 <div>
@@ -278,7 +316,7 @@
             </div>
 
             <div class="px-6 py-4 border-t border-slate-200 bg-slate-50 flex justify-between items-center">
-                <button onclick="resetDefaults()" class="text-rose-600 hover:text-rose-700 font-medium text-xs">Reset to Factory Defaults</button>
+                <button onclick="resetDefaults()" class="text-rose-600 hover:text-rose-700 font-medium text-xs">Reset Defaults</button>
                 <div class="space-x-2">
                     <button onclick="toggleModal('templateModal')" class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-100 font-medium">Cancel</button>
                     <button onclick="saveTemplates()" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-medium">Save Templates</button>
@@ -294,8 +332,13 @@
             inmail_subj: "Quick question, [Name]",
             inmail_body: "Hi [Name],\n\nA client requested I connect. They expressed interest in your experience and asked me to connect to see if you'd be open to discussing franchise options in your area.\n\nOpen to learning more? No sales pitch, just sound guidance around franchising.",
             
+            inmail2_subj: "Quick question, [Name]",
+            inmail2_body: "Hi [Name],\n\nI'm reaching out because a client of mine was impressed by your background and requested that I connect with you. They are currently looking for the right partner for a franchise opportunity in your local area.\n\nWould you be open to a brief 15-minute call to see if this aligns?",
+
             dm_body: "Hi [Name],\n\nThanks for connecting! \n\nI am reaching out on behalf of a client who works with senior corporate leaders looking to leverage their executive skill sets to build secondary, semi-absentee corporate asset portfolios, without leaving their day jobs. \n\nOpen to a brief 15-minute introduction this week to see if diversifying into these private equity-backed frameworks aligns with your long-term wealth goals?",
-            
+
+            dm2_body: "Hi [Name],\n\nA client requested I connect. They expressed interest in your experience and asked me to reach out to see if you’d be open to discussing franchise options in your area.\n\nWould you be open to a brief 15-minute call to learn more? No sales pitch, just sound guidance around franchising.",
+
             fu1_body: "Hi [Name], I know you're likely busy, so I just wanted to drop a quick note. \nNo pressure at all, but let me know if you might have 15 minutes to connect this week or next!",
             
             fu2_body: "Hi [Name], wanted to see if you had a chance to give this any thought?",
@@ -303,7 +346,7 @@
             fu3_body: "Hi [Name], following up one last time on my previous note. Assuming timing isn't right at the moment, so I'll leave you alone after this - but if you'd ever like to explore franchise options down the road, feel free to reach back out!"
         };
 
-        const SIGNATURES = {
+        const FIXED_SIGNATURES = {
             elizabeth: "Best Regards,\nElizabeth Bortolas | TalentPath Search",
             alexander: "Warm Regards\nAlexander Ovando | TalentPath Search",
             none: ""
@@ -312,7 +355,7 @@
         let currentStage = 'dm';
         let templates = { ...DEFAULT_TEMPLATES };
 
-        // Safe replace helper function that prevents corruption
+        // Helper function for safe string replacement
         function safeReplaceName(str, name) {
             if (!str) return '';
             return str.split('[Name]').join(name);
@@ -320,12 +363,21 @@
 
         // Initialize state
         function init() {
-            // Clear corrupted localStorage cache to enforce clean templates
             localStorage.removeItem('tp_outreach_templates');
             templates = { ...DEFAULT_TEMPLATES };
-            
             populateModalInputs();
             updateGenerator();
+        }
+
+        // Toggle custom signature text box UI
+        function toggleCustomSigInput() {
+            const isCustom = document.getElementById('sigRadioCustom').checked;
+            const box = document.getElementById('customSigBox');
+            if (isCustom) {
+                box.classList.remove('hidden');
+            } else {
+                box.classList.add('hidden');
+            }
         }
 
         // Set current message stage
@@ -338,8 +390,10 @@
             document.getElementById(`btn-${stage}`).classList.add('active-tab');
 
             const badgeMap = {
-                'inmail': 'InMail Mode',
-                'dm': 'DM Mode',
+                'inmail': 'InMail 1 Mode',
+                'inmail2': 'InMail 2 Mode',
+                'dm': 'DM 1 Mode',
+                'dm2': 'DM 2 Mode',
                 'fu1': 'Follow-Up 1',
                 'fu2': 'Follow-Up 2',
                 'fu3': 'Follow-Up 3'
@@ -347,7 +401,7 @@
             document.getElementById('badgeStage').innerText = badgeMap[stage];
 
             const subjectBox = document.getElementById('subjectBox');
-            if (stage === 'inmail') {
+            if (stage === 'inmail' || stage === 'inmail2') {
                 subjectBox.classList.remove('hidden');
             } else {
                 subjectBox.classList.add('hidden');
@@ -368,8 +422,15 @@
         function updateGenerator() {
             const nameInput = document.getElementById('contactName').value;
             const firstName = extractFirstName(nameInput);
+            
             const selectedSigKey = document.querySelector('input[name="signatureOption"]:checked').value;
-            const signatureText = SIGNATURES[selectedSigKey];
+            let signatureText = "";
+
+            if (selectedSigKey === 'custom') {
+                signatureText = document.getElementById('customSigInput').value;
+            } else {
+                signatureText = FIXED_SIGNATURES[selectedSigKey];
+            }
 
             let subject = '';
             let body = '';
@@ -377,8 +438,13 @@
             if (currentStage === 'inmail') {
                 subject = safeReplaceName(templates.inmail_subj, firstName);
                 body = safeReplaceName(templates.inmail_body, firstName);
+            } else if (currentStage === 'inmail2') {
+                subject = safeReplaceName(templates.inmail2_subj, firstName);
+                body = safeReplaceName(templates.inmail2_body, firstName);
             } else if (currentStage === 'dm') {
                 body = safeReplaceName(templates.dm_body, firstName);
+            } else if (currentStage === 'dm2') {
+                body = safeReplaceName(templates.dm2_body, firstName);
             } else if (currentStage === 'fu1') {
                 body = safeReplaceName(templates.fu1_body, firstName);
             } else if (currentStage === 'fu2') {
@@ -387,7 +453,7 @@
                 body = safeReplaceName(templates.fu3_body, firstName);
             }
 
-            if (signatureText) {
+            if (signatureText && signatureText.trim()) {
                 body += `\n\n${signatureText}`;
             }
 
@@ -421,7 +487,7 @@
 
         function copyFullScript() {
             let fullText = "";
-            if (currentStage === 'inmail') {
+            if (currentStage === 'inmail' || currentStage === 'inmail2') {
                 const subj = document.getElementById('previewSubject').innerText;
                 const body = document.getElementById('previewBody').innerText;
                 fullText = `SUBJECT:\n${subj}\n\nMESSAGE:\n${body}`;
@@ -452,7 +518,10 @@
         function populateModalInputs() {
             document.getElementById('tpl_inmail_subj').value = templates.inmail_subj;
             document.getElementById('tpl_inmail_body').value = templates.inmail_body;
+            document.getElementById('tpl_inmail2_subj').value = templates.inmail2_subj;
+            document.getElementById('tpl_inmail2_body').value = templates.inmail2_body;
             document.getElementById('tpl_dm_body').value = templates.dm_body;
+            document.getElementById('tpl_dm2_body').value = templates.dm2_body;
             document.getElementById('tpl_fu1_body').value = templates.fu1_body;
             document.getElementById('tpl_fu2_body').value = templates.fu2_body;
             document.getElementById('tpl_fu3_body').value = templates.fu3_body;
@@ -461,7 +530,10 @@
         function saveTemplates() {
             templates.inmail_subj = document.getElementById('tpl_inmail_subj').value;
             templates.inmail_body = document.getElementById('tpl_inmail_body').value;
+            templates.inmail2_subj = document.getElementById('tpl_inmail2_subj').value;
+            templates.inmail2_body = document.getElementById('tpl_inmail2_body').value;
             templates.dm_body = document.getElementById('tpl_dm_body').value;
+            templates.dm2_body = document.getElementById('tpl_dm2_body').value;
             templates.fu1_body = document.getElementById('tpl_fu1_body').value;
             templates.fu2_body = document.getElementById('tpl_fu2_body').value;
             templates.fu3_body = document.getElementById('tpl_fu3_body').value;
