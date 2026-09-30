@@ -72,7 +72,7 @@
     <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
-            <!-- Left Controls Column (5 cols) -->
+            <!-- Left Controls Column -->
             <div class="lg:col-span-5 space-y-6">
                 
                 <!-- Input Card -->
@@ -123,7 +123,7 @@
                         </div>
                     </div>
 
-                    <!-- Signature Selection (Dual Signatures) -->
+                    <!-- Signature Selection -->
                     <div class="pt-2 border-t border-slate-100">
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
                             <i class="fa-solid fa-file-signature text-brand-600 mr-1.5"></i> Select Signature
@@ -165,7 +165,7 @@
 
             </div>
 
-            <!-- Right Output Column (7 cols) -->
+            <!-- Right Output Column -->
             <div class="lg:col-span-7 space-y-6">
                 
                 <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm p-6 relative">
@@ -312,16 +312,18 @@
         let currentStage = 'dm';
         let templates = { ...DEFAULT_TEMPLATES };
 
+        // Safe replace helper function that prevents corruption
+        function safeReplaceName(str, name) {
+            if (!str) return '';
+            return str.split('[Name]').join(name);
+        }
+
         // Initialize state
         function init() {
-            const saved = localStorage.getItem('tp_outreach_templates');
-            if (saved) {
-                try {
-                    templates = JSON.parse(saved);
-                } catch(e) {
-                    templates = { ...DEFAULT_TEMPLATES };
-                }
-            }
+            // Clear corrupted localStorage cache to enforce clean templates
+            localStorage.removeItem('tp_outreach_templates');
+            templates = { ...DEFAULT_TEMPLATES };
+            
             populateModalInputs();
             updateGenerator();
         }
@@ -330,13 +332,11 @@
         function setStage(stage) {
             currentStage = stage;
             
-            // Update UI tab styles
             document.querySelectorAll('.stage-btn').forEach(btn => {
                 btn.classList.remove('active-tab');
             });
             document.getElementById(`btn-${stage}`).classList.add('active-tab');
 
-            // Update Badge Text
             const badgeMap = {
                 'inmail': 'InMail Mode',
                 'dm': 'DM Mode',
@@ -346,7 +346,6 @@
             };
             document.getElementById('badgeStage').innerText = badgeMap[stage];
 
-            // Toggle Subject Field visibility
             const subjectBox = document.getElementById('subjectBox');
             if (stage === 'inmail') {
                 subjectBox.classList.remove('hidden');
@@ -376,24 +375,22 @@
             let body = '';
 
             if (currentStage === 'inmail') {
-                subject = templates.inmail_subj.replace(/[Name]/g, firstName);
-                body = templates.inmail_body.replace(/[Name]/g, firstName);
+                subject = safeReplaceName(templates.inmail_subj, firstName);
+                body = safeReplaceName(templates.inmail_body, firstName);
             } else if (currentStage === 'dm') {
-                body = templates.dm_body.replace(/[Name]/g, firstName);
+                body = safeReplaceName(templates.dm_body, firstName);
             } else if (currentStage === 'fu1') {
-                body = templates.fu1_body.replace(/[Name]/g, firstName);
+                body = safeReplaceName(templates.fu1_body, firstName);
             } else if (currentStage === 'fu2') {
-                body = templates.fu2_body.replace(/[Name]/g, firstName);
+                body = safeReplaceName(templates.fu2_body, firstName);
             } else if (currentStage === 'fu3') {
-                body = templates.fu3_body.replace(/[Name]/g, firstName);
+                body = safeReplaceName(templates.fu3_body, firstName);
             }
 
-            // Attach signature if applicable
             if (signatureText) {
                 body += `\n\n${signatureText}`;
             }
 
-            // Render Output
             document.getElementById('previewSubject').innerText = subject;
             document.getElementById('previewBody').innerText = body;
         }
